@@ -22,12 +22,12 @@ class Character:
 # --- 2. Controller 層: 遊戲管理器 (由場景與流程負責人主要實作) ---
 class GameManager:
     def __init__(self, ui):
-        self.ui = ui
+        self.ui = ui # user interface (hp etc)
         self.player = Character("勇者", 100, 15)
         self.current_enemy = None
         self.game_state = "EXPLORE" # 遊戲狀態：探索 / 戰鬥
 
-    def start_game(self):
+    def start_game(self, *args): # *args 額外參數收集器
         self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}")
         self.ui.update_text("你進入了一個地下城。前方出現一隻史萊姆！")
         self.current_enemy = Character("史萊姆", 30, 5)
@@ -121,7 +121,13 @@ class GameUI:
 
         # 生成新按鈕
         for choice in choices:
+            ## (棄用)另外處理沒有參數(仍有1個self隱藏參數)的start_game
+            #if handler_function is self.game.start_game:
+            #    command = self.game.start_game
+            #else:
+            
             # 使用 partial 函式將 choice 作為參數傳遞給 handler_function
+            # 因為 tk.Button() 只接受無參數的 command
             command = partial(handler_function, choice)
             btn = tk.Button(self.button_frame, text=choice, command=command, width=15)
             btn.pack(side="left", padx=10)
@@ -138,4 +144,4 @@ if __name__ == '__main__':
 
     # 開始遊戲
     game_manager.start_game()
-    root.mainloop()
+    root.mainloop() # loop untill close window

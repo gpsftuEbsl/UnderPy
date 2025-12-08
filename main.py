@@ -2,7 +2,7 @@ import tkinter as tk
 from functools import partial
 from story.script import SCENE_SCRIPT # 匯入劇本資料
 from PIL import Image, ImageTk
-
+# 新增這一行之後 按ctrl+s來儲存
 # 新增這一行來引入戰鬥功能
 # 確保 battle 資料夾內有一個空的 __init__.py 檔案，或者 Python 3.3+ 通常可以直接 import
 from battle.battle_game import boss_battle

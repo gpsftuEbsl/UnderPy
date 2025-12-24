@@ -4,7 +4,7 @@ import random
 # ------------ 設定 ------------
 WIDTH, HEIGHT = 480, 360
 FPS = 60
-BATTLE_TIME = 30
+BATTLE_TIME = 3 # test 3 second for quicker testing
 
 BOX_RECT = pygame.Rect(80, 60, 320, 240)
 HEART_SPEED = 4

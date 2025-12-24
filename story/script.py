@@ -9,7 +9,7 @@ SCENE_SCRIPT = {
             "戰鬥 (Pygame)": "BATTLE_SLIME",
             "逃跑": "END_RUN"
         },
-        "image": "assets\images\dungeon.png"
+        "image": "assets/images/dungeon.png"
     },
     "SLIME_INFO": {
         "text": "史萊姆看起來很飢餓。確實是一隻史萊姆。",
@@ -17,7 +17,7 @@ SCENE_SCRIPT = {
             "準備戰鬥": "BATTLE_SLIME",
             "偷偷溜走": "END_RUN"
         },
-        "image": "assets\images\silme.png"
+        "image": "assets/images/silme.png"
     },
     # --- 戰鬥勝利後，導向第二層 ---
     "WIN_SLIME": {

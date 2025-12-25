@@ -33,7 +33,7 @@ class Character:
         # 扣血邏輯
         target.hp = target.hp - damage
         
-        # 這裡原本想用 max(0, ...)，但還是寫 if 判斷比較直觀
+        # 這裡原本用 max(0, ...)，但寫 if 判斷可讀性或許較好?
         # 防止血量變成負數
         if target.hp < 0:
             target.hp = 0
@@ -155,7 +155,7 @@ class GameManager:
                 self.load_scene(next_action)
             
         elif next_action == "START_GOBLIN_BATTLE":
-            self.current_enemy = Character("吊嘎哥布林", 40, 8)
+            self.current_enemy = Character("吊嘎哥布林", 45, 8)
             self.ui.type_text("【系統】你忍無可忍，拔劍衝向哥布林！", clear=False)
             self.enter_goblin_combat_loop()
             

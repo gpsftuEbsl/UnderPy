@@ -39,7 +39,7 @@ class GameManager:
         
         # --- Level 3 謎題設定 ---
         # 正確順序：圓形(創世) -> 三角形(戰爭) -> 方形(毀滅)
-        self.puzzle_answer = ["圓形按鈕", "三角形按鈕", "方形按鈕"]
+        self.puzzle_answer = ["◯", "△", "█"]
         self.puzzle_current = []
 
     def start_game(self, *args):

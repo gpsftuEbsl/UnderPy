@@ -72,12 +72,13 @@ SCENE_SCRIPT = {
     # ==========================================
     # ★ 第三層：失落的地下皇宮 (新增劇情)
     # ==========================================
+    # TODO: 增加提示按鈕 並減少純文字敘述中的提示
     "LEVEL_3_START": {
         "text": "【第三層：失落皇宮】\n密碼正確，大門開啟後，你被眼前的景象震驚了。\n這裡不再是潮濕的洞穴，而是一座埋藏在地底、金碧輝煌的宮殿！\n(太奇怪了，到底是誰，又為了什麼把皇宮蓋在這種鬼地方？)\n\n宮殿大廳連接著三個不同的房間：",
         "choices": {
-            "左側長廊 (巨大黑門)": "L3_DOOR_ROOM",
-            "右側藏寶室 (畫作)": "L3_ART_ROOM",
-            "前方陰暗房間 (地板機關)": "L3_PUZZLE_ROOM"
+            "左側長廊": "L3_DOOR_ROOM",
+            "右側藏寶室": "L3_ART_ROOM",
+            "前方陰暗房間": "L3_PUZZLE_ROOM"
         },
         "image": "assets/images/palace_hall.png"
     },
@@ -104,10 +105,10 @@ SCENE_SCRIPT = {
     "L3_PUZZLE_ROOM": {
         "text": "這個房間沒有一絲光線，空氣中瀰漫著古老的氣味。\n藉著微弱的光，你發現地板上有三個刻著神秘文字的形狀按鈕。\n\n根據你在藏寶室看到的歷史，該依照什麼順序按下它們？",
         "choices": {
-            "圓形按鈕": "PUSH_CIRCLE",
-            "三角形按鈕": "PUSH_TRIANGLE",
-            "方形按鈕": "PUSH_SQUARE",
-            "放棄並返回": "LEVEL_3_START"
+            "█": "PUSH_SQUARE",
+            "◯": "PUSH_CIRCLE",
+            "△": "PUSH_TRIANGLE",
+            "掉頭": "LEVEL_3_START"
         },
         "type": "PUZZLE", # 標記為謎題模式
         "image": "assets/images/dark_puzzle_room.png"

@@ -60,10 +60,14 @@ class GameManager:
         self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}")
         self.load_scene("START")
 
-    # ==========================================
-    #  核心：受傷與死亡判斷
-    # ==========================================
     def player_take_damage(self, amount, message=None):
+        """
+        核心：受傷與死亡判斷+呼叫ui特效
+        傳回值：如果死亡回傳 True，沒死回傳 False
+        參數：
+        - amount: 受傷數值
+        - message: 受傷後要顯示的訊息(可選)(使用: self.ui.type_text(message, clear=False))
+        """
         self.player.hp = self.player.hp - amount
         
         # 檢查不要讓血量變負的
@@ -82,6 +86,7 @@ class GameManager:
         return self.check_death()
     
     def check_death(self):
+        """萬用死亡檢查"""
         # 這裡直接寫 == False 邏輯感覺比較順
         if self.player.is_alive() == False:
             self.ui.hide_input_field()
@@ -91,10 +96,12 @@ class GameManager:
             return True
         return False
     
-    # ==========================================
-    #  場景載入
-    # ==========================================
     def load_scene(self, scene_id):
+        """
+        載入場景資料並更新 UI\n
+        (包含輸入框圖片與選項)\n
+        有用到呼叫: self.ui.set_choices(choices_list, self.handle_scene_choice)
+        """
         self.current_scene_id = scene_id
         
         # 從劇本字典抓資料
@@ -116,7 +123,10 @@ class GameManager:
             self.ui.set_choices(choices_list, self.handle_scene_choice)
 
     def handle_scene_choice(self, choice):
-        """ 按鈕被點擊時會執行這裡 """
+        """
+        按鈕被點擊時會執行這裡
+        一些特殊邏輯也會在這裡處理
+        """
         current_scene_data = self.script_data.get(self.current_scene_id)
         
         # 查表找下一個場景 ID

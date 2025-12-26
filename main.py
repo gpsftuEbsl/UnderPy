@@ -200,7 +200,7 @@ class GameManager:
     #  Level 3: 解謎邏輯 TODO: 之後可以重新命名同level的函式 或做成類別 (目前code還沒有很長所以先不做)
     # ==========================================
     
-    # 因為 after 不能直接塞有參數的函式，所以寫一個獨立的函式來呼叫
+    # 因為 after 不能直接塞有參數的函式，所以寫一個獨立的函式來呼叫(可以用 lambda 但先這樣寫)
     def _delayed_puzzle_success(self):
         self.load_scene("L3_UNLOCK_SUCCESS")
 

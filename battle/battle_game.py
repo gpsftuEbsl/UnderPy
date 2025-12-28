@@ -212,7 +212,7 @@ def final_boss_battle():
     heart = Heart()
     bullets = []
     frame = 0
-    TOTAL_TIME = 60
+    TOTAL_TIME = 1 # test
 
     while True:
         clock.tick(FPS)

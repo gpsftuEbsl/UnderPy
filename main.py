@@ -334,7 +334,7 @@ class GameManager:
             self.ui.type_text("\n".join(msgs), clear=False)
 
     # ==========================================
-    #  存檔與讀檔系統 (JSON)
+    #  存檔與讀檔系統 (JSON) - 新增部分
     # ==========================================
     def save_game(self):
         """ 將當前狀態寫入 savefile.json """

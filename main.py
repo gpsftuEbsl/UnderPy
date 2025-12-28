@@ -2,6 +2,8 @@
 # 遊戲主程式與邏輯管理
 
 import tkinter as tk
+import json # <--- 新增：用於存檔
+import os   # <--- 新增：用於檢查檔案是否存在
 from story.script import SCENE_SCRIPT
 from ui.game_ui import GameUI
 
@@ -161,6 +163,16 @@ class GameManager:
         # 找出choice裡面的下一個場景的id
         next_action = current_scene_data["choices"].get(choice)
         
+        # === 新增：存讀檔指令判斷 ===
+        if next_action == "SAVE_GAME":
+            self.save_game()
+            return # 存完檔就停在原地，不跳轉
+            
+        if next_action == "LOAD_GAME":
+            self.load_game()
+            return
+        # ===========================
+
         # --- Level 3 謎題特殊判斷 ---
         scene_type = current_scene_data.get("type")
         if scene_type == "PUZZLE":
@@ -320,6 +332,48 @@ class GameManager:
                 msgs.append("提示：你不知道密碼。")
                 
             self.ui.type_text("\n".join(msgs), clear=False)
+
+    # ==========================================
+    #  存檔與讀檔系統 (JSON)
+    # ==========================================
+    def save_game(self):
+        """ 將當前狀態寫入 savefile.json """
+        data = {
+            "hp": self.player.hp,
+            "scene": self.current_scene_id,
+            "known_password": self.known_password
+        }
+        
+        try:
+            with open("savefile.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            
+            self.ui.type_text("\n【系統】進度已儲存！(寫入 savefile.json)", clear=False)
+        except Exception as e:
+            self.ui.type_text(f"\n【系統】存檔失敗：{e}", clear=False)
+
+    def load_game(self):
+        """ 讀取 savefile.json 並恢復狀態 """
+        if not os.path.exists("savefile.json"):
+            self.ui.type_text("\n【系統】找不到存檔紀錄！請先進行遊戲並存檔。", clear=False)
+            return
+
+        try:
+            with open("savefile.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+            
+            # 恢復數值
+            self.player.hp = data.get("hp", 100)
+            self.current_scene_id = data.get("scene", "START")
+            self.known_password = data.get("known_password")
+            
+            # 更新畫面
+            self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}")
+            self.load_scene(self.current_scene_id)
+            self.ui.type_text("\n【系統】讀檔成功！歡迎回來。", clear=False)
+            
+        except Exception as e:
+            self.ui.type_text(f"\n【系統】讀檔檔案損毀或格式錯誤：{e}", clear=False)
 
 if __name__ == '__main__':
     root = tk.Tk()

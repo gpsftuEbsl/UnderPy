@@ -139,7 +139,7 @@ class GameManager:
         :param scene_id: 場景 ID 字串
         """
         
-        # --- [優化] 輪迴判定邏輯 ---
+        # ---  輪迴判定邏輯 ---
         # 如果原本要載入 START，且已經有輪迴次數，就偷偷把 ID 換成 START_LOOP
         # 這樣就不用在 main.py 裡面寫死文字了
         target_scene_id = scene_id
@@ -155,7 +155,7 @@ class GameManager:
             print(f"找不到場景 ID: {target_scene_id}") # Debug 用
             return
         
-        # --- [優化] 處理文字內的變數 ({loop_count}) ---
+        # ---  處理文字內的變數 ({loop_count}) ---
         display_text = scene["text"]
         # 如果文字裡有 {loop_count} 這種格式，就自動填入數字
         if "{loop_count}" in display_text:
@@ -216,7 +216,7 @@ class GameManager:
             self.save_game() 
             
             # 強制跳轉回 START (load_scene 會自動把它轉成 START_LOOP)
-            self.ui.type_text("\n\n【系統】世界正在重組... 你的意識被傳送回原點...", clear=False)
+            self.ui.type_text("\n\n【系統】g4ru,45/y94tj/6yj3... 你的意識被nj/4cjo6m062u03...", clear=False)
             self.ui.master.after(3000, lambda: self.load_scene("START"))
             return
 
@@ -295,7 +295,7 @@ class GameManager:
                 self.puzzle_current = [] 
                 
                 # 延遲一下再切換場景
-                self.ui.master.after(1500, self._delayed_puzzle_success)
+                self.ui.master.after(2000, self._delayed_puzzle_success)
             else:
                 self.puzzle_current = []
                 msg = "【系統】嗶嗶！順序錯誤！機關發出了強烈的電擊！"
@@ -371,8 +371,7 @@ class GameManager:
         else:
             if self.player_take_damage(5): return
             msgs.append("【系統】密碼錯誤！大門發出尖銳嘲笑聲。")
-            
-            # 這裡用一般的 if else 比較好讀
+
             if self.known_password:
                 msgs.append(f"提示：密碼似乎是 {self.known_password}")
             else:

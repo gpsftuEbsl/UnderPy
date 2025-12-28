@@ -13,7 +13,7 @@ SCENE_SCRIPT = {
             "逃跑": "END_RUN",
             "讀取進度": "LOAD_GAME" # 讀取功能
         },
-        "image": "assets/images/dungeon.png"
+        "image": "assets/images/dungeon.png" #ok
     },
     "SLIME_INFO": {
         "text": "史萊姆看起來黏糊糊的...\n(一股史萊姆的味道襲來)\n呃阿......(你邊摀住口鼻邊倒退)\n...這...確實是一隻史萊姆......\n說話間，史萊姆突然開始向你彈射從體內冒出的強酸子彈。",
@@ -21,7 +21,7 @@ SCENE_SCRIPT = {
             "開始戰鬥": "BATTLE_SLIME",
             "偷偷溜走": "END_RUN"
         },
-        "image": "assets/images/slime.png"
+        "image": "assets/images/slime.png" #ok
     },
     "WIN_SLIME": {
         "text": "你贏了！史萊姆似乎用完了所有「彈藥」。\n你在史萊姆後方發現一條向下延伸的的階梯......",
@@ -29,7 +29,7 @@ SCENE_SCRIPT = {
             "前往第二層": "LEVEL_2_GOBLIN",
             "在樓梯口休息 (存檔)": "SAFE_ZONE_1" # 存檔分支
         },
-        "image": "assets/images/stairs_down.png"
+        "image": "assets/images/stairs_down.png" #ok
     },
 
     # ---  存檔點 (臨時營地) ---
@@ -39,7 +39,7 @@ SCENE_SCRIPT = {
             "寫日記 (存檔)": "SAVE_GAME",   # <--- 觸發存檔指令
             "繼續前進": "LEVEL_2_GOBLIN"
         },
-        "image": "assets/images/campfire.png" 
+        "image": "assets/images/campfire.png" #ok
     },
     # 
 
@@ -52,7 +52,7 @@ SCENE_SCRIPT = {
         "choices": {
             "進入戰鬥": "START_GOBLIN_BATTLE"
         },
-        "image": "assets/images/goblin_taunt.png"
+        "image": "assets/images/goblin_taunt.png" #ok
     },
     "GOBLIN_DEFEATED": {
         "text": "哥布林：『哎唷！君子動口不動手啊！大哥饒命！』\n你手中的劍架在牠的脖子上，牠已經徹底失去了戰意。",
@@ -60,27 +60,27 @@ SCENE_SCRIPT = {
             "殺死牠": "GOBLIN_KILLED",
             "放走牠": "GOBLIN_SPARED"
         },
-        "image": "assets/images/goblin_cry.png"
+        "image": "assets/images/goblin_cry.png" #ok
     },
     "GOBLIN_KILLED": {
         "text": "你擔心放走哥布林會留下隱患，心想:「此子心機頗深，斷不可留!」\n於是你一劍解決了哥布林。世界清靜了。\n但是... 牠身上什麼都沒有。\n你總覺得好像錯過了什麼......",
         "choices": {
             "前往大門": "LEVEL_2_GATE"
         },
-        "image": "assets/images/empty_room.png"
+        "image": "assets/images/empty_room.png" #ok
     },
     "GOBLIN_SPARED": {
         "text": "哥布林感動涕零：「大哥你人真好！\n...我想...這個數字你應該會需要--9527--」\n(你記住了密碼 9527)\n你繼續往洞穴深處走去，突然想起自己還沒問個哥布林這是什麼地方......\n你回頭望去，發現剛剛的哥布林不見了。",
         "choices": {
             "前往大門": "LEVEL_2_GATE"
         },
-        "image": "assets/images/goblin_happy.png"
+        "image": "assets/images/goblin_happy.png" #ok
     },
     "LEVEL_2_GATE": {
         "text": "繼續往迷宮的深處前進\n你來到一扇長滿青苔的巨大石門前。\n門上有個數字鎖，上面寫著：『請輸入通行密碼』",
         "choices": {}, 
         "type": "INPUT", 
-        "image": "assets/images/door_locked.png"
+        "image": "assets/images/door_locked.png" #ok
     },
 
     # ==========================================
@@ -94,7 +94,7 @@ SCENE_SCRIPT = {
             "右側藏寶室": "L3_ART_ROOM",
             "前方陰暗房間": "L3_PUZZLE_ROOM"
         },
-        "image": "assets/images/palace_hall.png"
+        "image": "assets/images/palace_hall.png" #ok
     },
 
     # --- 房間 1：封閉的黑門 ---
@@ -103,7 +103,7 @@ SCENE_SCRIPT = {
         "choices": {
             "返回大廳": "LEVEL_3_START"
         },
-        "image": "assets/images/black_door_closed.png"
+        "image": "assets/images/black_door_closed.png" #ok
         # "image": "assets/images/black_door_closed.png" # TODO: 製作門打開後的圖片
     },
 
@@ -113,7 +113,7 @@ SCENE_SCRIPT = {
         "choices": {
             "返回大廳": "LEVEL_3_START"
         },
-        "image": "assets/images/art_room.png"
+        "image": "assets/images/art_room.png" #ok
     },
 
     # --- 房間 3：謎題機關 (PUZZLE 模式) ---
@@ -126,7 +126,7 @@ SCENE_SCRIPT = {
             "放棄": "LEVEL_3_START"
         },
         "type": "PUZZLE", # 標記為謎題模式
-        "image": "assets/images/dark_puzzle_room.png"
+        "image": "assets/images/dark_puzzle_room.png" #ok
     },
 
     # --- 解謎成功 ---
@@ -135,7 +135,7 @@ SCENE_SCRIPT = {
         "choices": {
             "前往核心區域": "SAFE_ZONE_2" # 改為前往最終存檔點
         },
-        "image": "assets/images/door_open_metal.png"
+        "image": "assets/images/door_open_metal.png" # ok
     },
 
     # --- 最終存檔點 (系統還原點) ---
@@ -146,29 +146,29 @@ SCENE_SCRIPT = {
             "深呼吸，進入大門": "BOSS_PRELUDE",
             "返回大廳": "LEVEL_3_START"
         },
-        "image": "assets/images/save_point.png" # 記得確認圖片路徑，或是沿用 campfire
+        "image": "assets/images/camefire.png" # 沿用 campfire
     },
 
     # --- Boss 戰前奏 ---
     "BOSS_PRELUDE": {
         "text": "你走進大門，一股強大的亂流撲面而來...\n(這裡就是終點了嗎？)",
         "choices": {
-            "準備戰鬥": "BOSS_BATTLE" # 這裡改為觸發 Boss 戰
+            "準備戰鬥": "BOSS_BATTLE" # 這裡觸發 Boss 戰
         },
-        "image": "assets/images/boss_room.png"
+        "image": "assets/images/boss_room.png" #ok
     },
 
     # --- 戰勝 Boss ---
     "BOSS_WIN": {
-        "text": "【系統警告：核心程序受損...】\n虛空領主的外殼碎裂，化作無數光點消散在虛空中。\n\n隨著領主的消失，周圍的牆壁開始崩塌，一道耀眼的白光出現在前方。\n那是...出口？還是另一個輪迴的開始？",
+        "text": "未知的聲音:『............』\n『終......』\n『終於......解脫了嗎?......a8 ?』\n隨著【boss】的消失，周圍的牆壁開始崩塌\n【警告：核心程序受損...】\ng4ru,4的外殼碎裂，系統即將強制tj/6ru3.。\n一道耀眼的白光出現在前方。\n那是...出口？還是另一個輪迴的開始？",
         "choices": {
             "走向白光": "END_WIN"
         },
-        "image": "assets/images/boss_explode.png"
+        "image": "assets/images/boss_explode.png" #ok
     },
 
     # --- 結局 ---
     "END_RUN": {"text": "你逃跑了。Game Over。", "choices": {}, "image": "assets/images/the_end.png"},
     "END_LOSE": {"text": "你死了。Game Over。", "choices": {}, "image": "assets/images/the_end.png"},
-    "END_WIN": {"text": "恭喜通關目前版本！", "choices": {}, "image": "assets/images/the_end.png"}
+    "END_WIN": {"text": "恭喜通關！", "choices": {}, "image": "assets/images/the_end.png"}
 }

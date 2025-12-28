@@ -4,6 +4,7 @@
 import tkinter as tk
 from functools import partial
 from PIL import Image, ImageTk
+import os
 
 class GameUI:
     """
@@ -141,17 +142,26 @@ class GameUI:
         # 這裡的 self.status_label 依然是指向左邊的 HP 血條，功能正常
         self.status_label.config(text=text)
 
+    
+
     def update_image(self, image_path=None):
-        if image_path:
-            try:
-                img = Image.open(image_path)
-                img = img.resize((500, 350), Image.Resampling.LANCZOS)
-                self.current_image = ImageTk.PhotoImage(img)
-                self.image_label.config(image=self.current_image, width=500, height=350)
-            except Exception:
-                self.image_label.config(image="", width=1, height=1)
-        else:
+        if not image_path:
             self.image_label.config(image="", width=1, height=1)
+            return
+
+        try:
+            base_dir = os.path.dirname(os.path.dirname(__file__))
+            full_path = os.path.join(base_dir, image_path)
+
+            img = Image.open(full_path)
+            img = img.resize((500, 350), Image.Resampling.LANCZOS)
+            self.current_image = ImageTk.PhotoImage(img)
+            self.image_label.config(image=self.current_image, width=500, height=350)
+
+        except Exception as e:
+            print("圖片載入失敗：", e)
+            self.image_label.config(image="", width=1, height=1)
+
 
     def set_choices(self, choices, handler_function):
         """

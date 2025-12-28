@@ -21,7 +21,7 @@ SCENE_SCRIPT = {
             "開始戰鬥": "BATTLE_SLIME",
             "偷偷溜走": "END_RUN"
         },
-        "image": "assets/images/silme.png"
+        "image": "assets/images/slime.png"
     },
     "WIN_SLIME": {
         "text": "你贏了！史萊姆似乎用完了所有「彈藥」。\n你在史萊姆後方發現一條向下延伸的的階梯......",

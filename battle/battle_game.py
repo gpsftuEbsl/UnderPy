@@ -10,7 +10,7 @@ FPS = 60
 BOX_RECT = pygame.Rect(80, 60, 320, 240)
 
 HEART_SPEED = 4
-PLAYER_HP = 100
+PLAYER_HP = 120 # 100 我覺得有點難度太高了
 
 
 # ================= 玩家（心型） =================

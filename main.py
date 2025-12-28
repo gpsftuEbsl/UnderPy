@@ -129,7 +129,7 @@ class GameManager:
             self.ui.set_choices([], None)
             self.ui.type_text("\n【系統】你的 HP 歸零了。冒險在此終結... (Game Over)", clear=False)
             # 在這裡可以直接載入失敗場景，避免卡在原地
-            self.load_scene("END_LOSE") 
+            self.ui.load_scene("END_LOSE") 
             return True
         return False
     
@@ -149,7 +149,7 @@ class GameManager:
         if self.has_beaten_boss:
             if scene_id == "START" and "START_LOOP" in self.script_data:
                 target_scene_id = "START_LOOP"
-            # [新功能] 如果進入 Boss 前奏，且已通關過，切換到真相篇
+            # 如果進入 Boss 前奏，且已通關過，切換到真相篇
             elif scene_id == "BOSS_PRELUDE" and "BOSS_PRELUDE_LOOP" in self.script_data:
                 target_scene_id = "BOSS_PRELUDE_LOOP"
 
@@ -194,9 +194,9 @@ class GameManager:
         :param choice: 玩家選擇的選項文字
         """
         
-        # --- 處理刪除存檔 ---
+        # --- 處理刪除存檔 (主選單來的) ---
         if choice == "刪除所有紀錄":
-            self.delete_all_save()
+            self.delete_all_save(restart=True) # 主選單刪除時，要重新載入 START
             return
 
         current_scene_data = self.script_data.get(self.current_scene_id) # 找出劇情字典id
@@ -214,11 +214,17 @@ class GameManager:
             return
         # ===========================
 
-        # --- [新功能] 真結局觸發 ---
+        # --- 真結局觸發 (重要修改) ---
         if next_action == "TRUE_END":
-            # 玩家選擇刪除世界，直接刪檔，並進入真結局畫面
-            self.delete_all_save() 
+            # 1. 玩家選擇刪除世界，刪檔，但【不要自動重啟】
+            self.delete_all_save(restart=False) 
+            
+            # 2. 載入真結局畫面
             self.load_scene("TRUE_END")
+            
+            # 3. 【強制覆蓋按鈕】：無視劇本設定，強制顯示「關閉遊戲」
+            # 點擊後執行 self.ui.master.destroy() 關閉視窗
+            self.ui.set_choices(["關閉遊戲"], lambda x: self.ui.master.destroy())
             return
 
         # --- 處理結局與通關邏輯 ---
@@ -266,7 +272,7 @@ class GameManager:
             self.ui.master.deiconify() 
             
             if res == "WIN":
-                # [新功能] 判斷是否為二周目
+                # 判斷是否為二周目
                 if self.has_beaten_boss:
                     self.load_scene("BOSS_WIN_LOOP") # 進入真結局路線
                 else:
@@ -300,9 +306,7 @@ class GameManager:
     #  Level 3: 解謎邏輯 TODO: 之後可以重新命名同level的函式 或做成類別 (目前code還沒有很長所以先不做)
     # ==========================================
     
-    # 因為 after 不能直接塞有參數的函式，所以寫一個獨立的函式來呼叫
-    def _delayed_puzzle_success(self):
-        self.load_scene("L3_UNLOCK_SUCCESS")
+    # [臨時修改] 原本這裡有一個 _delayed_puzzle_success，現在已經移除並改用 lambda
 
     def handle_order_puzzle(self, button_name):
         self.puzzle_current.append(button_name)
@@ -316,7 +320,8 @@ class GameManager:
                 self.puzzle_current = [] 
                 
                 # 延遲一下再切換場景
-                self.ui.master.after(2000, self._delayed_puzzle_success)
+                # 因為 after 不能直接塞有參數的函式，所以這裡改用 lambda
+                self.ui.master.after(2000, lambda: self.load_scene("L3_UNLOCK_SUCCESS"))
             else:
                 self.puzzle_current = []
                 msg = "【系統】嗶嗶！順序錯誤！機關發出了強烈的電擊！"
@@ -371,9 +376,7 @@ class GameManager:
     #  Level 2: 密碼輸入 TODO: 之後可以重新命名同level的函式 或做成類別
     # ==========================================
     
-    # 這個也是為了 after 寫的延遲函式
-    def _delayed_level_3_start(self):
-        self.load_scene("LEVEL_3_START")
+    # [臨時修改] 原本這裡有一個 _delayed_level_3_start，現在已經移除並改用 lambda
 
     def handle_password_input(self, val):
         msgs = []
@@ -388,7 +391,8 @@ class GameManager:
             self.ui.hide_input_field()
             
             # 用after方法延遲跳轉
-            self.ui.master.after(1500, self._delayed_level_3_start)
+            # 這個也是為了 after 寫的延遲，改用 lambda
+            self.ui.master.after(1500, lambda: self.load_scene("LEVEL_3_START"))
         else:
             if self.player_take_damage(5): return
             msgs.append("【系統】密碼錯誤！大門發出尖銳嘲笑聲。")
@@ -437,23 +441,26 @@ class GameManager:
             self.has_beaten_boss = data.get("has_beaten_boss", False) # 恢復通關狀態
             
             # 更新畫面
-            self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}")
-            self.load_scene(self.current_scene_id)
-            self.ui.type_text("\n【系統】讀檔成功！歡迎回來。", clear=False)
+            self.ui.type_text("\n【系統】讀檔成功 跳轉中.", clear=False) # 避免覆蓋文字
+            
+            self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}") # 避免覆蓋文字
+            self.ui.master.after(1500, lambda: self.load_scene(self.current_scene_id)) # 避免覆蓋文字
             
         except Exception as e:
             self.ui.type_text(f"\n【系統】讀檔檔案損毀或格式錯誤：{e}", clear=False)
 
-    def delete_all_save(self):
-        """ 刪除存檔並重置 """
+    def delete_all_save(self, restart=True):
+        """ 刪除存檔並重置。restart=True 代表刪完要跳回開頭，False 代表停在原地 """
         if os.path.exists("savefile.json"):
             try:
                 os.remove("savefile.json")
                 self.has_beaten_boss = False # 重置記憶
                 self.ui.type_text("\n【系統】存檔已刪除！世界線已重置。", clear=False)
                 
-                # 重新載入 START 場景來刷新按鈕 (把刪除按鈕藏起來)
-                self.ui.master.after(1000, lambda: self.load_scene("START"))
+                # [修正] 只有當 restart 為 True 時，才自動跳轉回 START
+                if restart:
+                    # 重新載入 START 場景來刷新按鈕 (把刪除按鈕藏起來)
+                    self.ui.master.after(1000, lambda: self.load_scene("START"))
             except Exception as e:
                 self.ui.type_text(f"\n【系統】刪除失敗：{e}", clear=False)
         else:

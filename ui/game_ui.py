@@ -101,7 +101,7 @@ class GameUI:
                                    bd=0, width=20)
         self.entry_field.pack(side="left", padx=10, ipady=8)
         
-        self.confirm_btn = tk.Button(self.input_frame, text="確認送出", command=self.submit_password,
+        self.confirm_btn = tk.Button(self.input_frame, text="請按這送出", command=self.submit_password,
                                      font=self.fonts["bold"], bg=self.colors["fg_accent"], fg="white",
                                      relief="flat", cursor="hand2", padx=20, pady=5)
         self.confirm_btn.pack(side="left", padx=5)

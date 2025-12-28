@@ -10,7 +10,7 @@ FPS = 60
 BOX_RECT = pygame.Rect(80, 60, 320, 240)
 
 HEART_SPEED = 4
-PLAYER_HP = 120 # 100 我覺得有點難度太高了
+PLAYER_HP = 130 # 100 我覺得有點難度太高了
 
 
 # ================= 玩家（心型） =================
@@ -81,7 +81,7 @@ def boss_battle():
     heart = Heart()
     bullets = []
     frame = 0
-    TOTAL_TIME = 15 # set 15 (noraml difficulty)
+    TOTAL_TIME = 20 # set 15-20 (正常)
 
     while True:
         clock.tick(FPS)
@@ -212,7 +212,7 @@ def final_boss_battle():
     heart = Heart()
     bullets = []
     frame = 0
-    TOTAL_TIME = 43 # set 45 (>50 我覺得太難了)
+    TOTAL_TIME = 50 # set 50 (>50 我覺得太難了)
 
     while True:
         clock.tick(FPS)

@@ -392,7 +392,7 @@ class GameManager:
             
             # 用after方法延遲跳轉
             # 這個也是為了 after 寫的延遲，改用 lambda
-            self.ui.master.after(1500, lambda: self.load_scene("LEVEL_3_START"))
+            self.ui.master.after(2000, lambda: self.load_scene("LEVEL_3_START"))
         else:
             if self.player_take_damage(5): return
             msgs.append("【系統】密碼錯誤！大門發出尖銳嘲笑聲。")
@@ -400,7 +400,7 @@ class GameManager:
             if self.known_password:
                 msgs.append(f"提示：密碼似乎是 {self.known_password}")
             else:
-                msgs.append("提示：你不知道密碼。")
+                msgs.append("提示：你不知道密碼，你感到十分空虛。")
                 
             self.ui.type_text("\n".join(msgs), clear=False)
 
@@ -444,7 +444,7 @@ class GameManager:
             self.ui.type_text("\n【系統】讀檔成功 跳轉中.", clear=False) # 避免覆蓋文字
             
             self.ui.update_status(f"HP: {self.player.hp}/{self.player.max_hp}") # 避免覆蓋文字
-            self.ui.master.after(1500, lambda: self.load_scene(self.current_scene_id)) # 避免覆蓋文字
+            self.ui.master.after(2000, lambda: self.load_scene(self.current_scene_id)) # 避免覆蓋文字
             
         except Exception as e:
             self.ui.type_text(f"\n【系統】讀檔檔案損毀或格式錯誤：{e}", clear=False)

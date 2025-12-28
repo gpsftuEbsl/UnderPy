@@ -1,114 +1,126 @@
 import pygame
 import random
+import math
+import sys
 
-# ------------ 設定 ------------
+# ================= 基本設定 =================
 WIDTH, HEIGHT = 480, 360
 FPS = 60
-BATTLE_TIME = 3 # test 3 second for quicker testing
 
 BOX_RECT = pygame.Rect(80, 60, 320, 240)
+
 HEART_SPEED = 4
-BULLET_SPEED = 4
-SPAWN_RATE = 25
 PLAYER_HP = 100
 
 
-# ------------ 玩家（心臟） ------------
+# ================= 玩家（心型） =================
 class Heart:
     def __init__(self):
         self.x = BOX_RECT.centerx
         self.y = BOX_RECT.centery
-        self.r = 8
+        self.size = 12
         self.hp = PLAYER_HP
 
     def move(self, keys):
-        if keys[pygame.K_UP] and self.y - self.r > BOX_RECT.top:
+        if keys[pygame.K_UP] and self.y - self.size > BOX_RECT.top:
             self.y -= HEART_SPEED
-        if keys[pygame.K_DOWN] and self.y + self.r < BOX_RECT.bottom:
+        if keys[pygame.K_DOWN] and self.y + self.size < BOX_RECT.bottom:
             self.y += HEART_SPEED
-        if keys[pygame.K_LEFT] and self.x - self.r > BOX_RECT.left:
+        if keys[pygame.K_LEFT] and self.x - self.size > BOX_RECT.left:
             self.x -= HEART_SPEED
-        if keys[pygame.K_RIGHT] and self.x + self.r < BOX_RECT.right:
+        if keys[pygame.K_RIGHT] and self.x + self.size < BOX_RECT.right:
             self.x += HEART_SPEED
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (255, 0, 0), (self.x, self.y), self.r)
+        points = []
+        for t in range(0, 360, 12):
+            rad = math.radians(t)
+            x = 16 * math.sin(rad) ** 3
+            y = (
+                13 * math.cos(rad)
+                - 5 * math.cos(2 * rad)
+                - 2 * math.cos(3 * rad)
+                - math.cos(4 * rad)
+            )
+            px = self.x + x * self.size / 16
+            py = self.y - y * self.size / 16
+            points.append((px, py))
+        pygame.draw.polygon(screen, (255, 0, 0), points)
 
 
-# ------------ 子彈 ------------
+# ================= 普通 Boss 子彈 =================
 class Bullet:
     def __init__(self):
-        self.x = random.randint(BOX_RECT.left, BOX_RECT.right)
-        self.y = BOX_RECT.top
         self.size = 30
+        self.x = random.randint(BOX_RECT.left, BOX_RECT.right - self.size)
+        self.y = BOX_RECT.top
+        self.speed = 4
 
     def update(self):
-        self.y += BULLET_SPEED
+        self.y += self.speed
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (255, 255, 0), (self.x, self.y, self.size, self.size))
+        pygame.draw.rect(screen, (255, 255, 0),
+                         (self.x, self.y, self.size, self.size))
 
-    def is_off_screen(self):
+    def rect(self):
+        return pygame.Rect(self.x, self.y, self.size, self.size)
+
+    def is_off(self):
         return self.y > BOX_RECT.bottom
 
 
-# ------------ Boss 戰主函式 ------------
+# ================= 普通 Boss（原本保留） =================
 def boss_battle():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Boss Battle – UnderPy")
+    pygame.display.set_caption("Boss Battle")
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("arial", 24)
 
     heart = Heart()
     bullets = []
     frame = 0
+    TOTAL_TIME = 60
 
-    running = True
-    while running:
+    while True:
         clock.tick(FPS)
         screen.fill((0, 0, 0))
+        frame += 1
+        remaining_time = max(0, TOTAL_TIME - frame // FPS)
 
-        # ---- 事件 ----
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return "QUIT"
 
-        # ---- 玩家移動 ----
-        keys = pygame.key.get_pressed()
-        heart.move(keys)
+        heart.move(pygame.key.get_pressed())
 
-        # ---- 時間 ----
-        frame += 1
-        remaining_time = max(0, BATTLE_TIME - frame // FPS)
-
-        # ---- 生成子彈 ----
-        if frame % SPAWN_RATE == 0:
+        if frame % 25 == 0:
             bullets.append(Bullet())
 
-        # ---- 子彈更新 & 碰撞 ----
         for b in bullets[:]:
             b.update()
-
-            if b.is_off_screen():
+            if b.is_off():
                 bullets.remove(b)
                 continue
 
-            if pygame.Rect(b.x, b.y, b.size, b.size).colliderect(
-                pygame.Rect(heart.x - heart.r, heart.y - heart.r, heart.r * 2, heart.r * 2)
+            if b.rect().colliderect(
+                pygame.Rect(
+                    heart.x - heart.size,
+                    heart.y - heart.size,
+                    heart.size * 2,
+                    heart.size * 2
+                )
             ):
                 heart.hp -= 20
                 bullets.remove(b)
-
                 if heart.hp <= 0:
                     pygame.quit()
                     return "LOSE"
 
-        # ---- 繪圖 ----
         pygame.draw.rect(screen, (255, 255, 255), BOX_RECT, 2)
         heart.draw(screen)
-
         for b in bullets:
             b.draw(screen)
 
@@ -117,12 +129,181 @@ def boss_battle():
 
         pygame.display.update()
 
-        # ---- 勝利條件 ----
         if remaining_time <= 0:
             pygame.quit()
             return "WIN"
 
 
-# ------------ 單獨測試 ------------
+# ================= Final Boss 子彈 =================
+class CircleBullet:
+    def __init__(self):
+        self.r = 8
+        self.x = random.randint(BOX_RECT.left, BOX_RECT.right)
+        self.y = BOX_RECT.top
+        self.speed = 3
+
+    def update(self):
+        self.y += self.speed
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, (255, 200, 0), (self.x, self.y), self.r)
+
+    def rect(self):
+        return pygame.Rect(self.x - self.r, self.y - self.r, self.r * 2, self.r * 2)
+
+
+class WaveBullet:
+    def __init__(self):
+        self.base_x = random.randint(BOX_RECT.left, BOX_RECT.right)
+        self.y = BOX_RECT.top
+        self.t = random.randint(0, 360)
+        self.size = 10
+
+    def update(self):
+        self.y += 3
+        self.t += 10
+        self.x = self.base_x + math.sin(math.radians(self.t)) * 40
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (0, 200, 255),
+                         (self.x, self.y, self.size, self.size))
+
+    def rect(self):
+        return pygame.Rect(self.x, self.y, self.size, self.size)
+
+
+class HomingBullet:
+    """追蹤子彈（有壽命，會自爆）"""
+    def __init__(self, target):
+        self.target = target
+        self.x = random.choice([BOX_RECT.left, BOX_RECT.right])
+        self.y = random.randint(BOX_RECT.top, BOX_RECT.bottom)
+        self.size = 10
+
+        self.life = 90        # ★ 追蹤 3 秒後自爆
+        self.homing_power = 0.015
+
+    def update(self):
+        self.x += (self.target.x - self.x) * self.homing_power
+        self.y += (self.target.y - self.y) * self.homing_power
+        self.life -= 1
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, (255, 80, 80),
+                           (int(self.x), int(self.y)), self.size)
+
+    def rect(self):
+        return pygame.Rect(
+            self.x - self.size,
+            self.y - self.size,
+            self.size * 2,
+            self.size * 2
+        )
+
+
+# ================= Final Boss（三階段） =================
+def final_boss_battle():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("FINAL BOSS")
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont("arial", 24)
+
+    heart = Heart()
+    bullets = []
+    frame = 0
+    TOTAL_TIME = 60
+
+    while True:
+        clock.tick(FPS)
+        screen.fill((0, 0, 0))
+        frame += 1
+        remaining_time = max(0, TOTAL_TIME - frame // FPS)
+
+        # ---- Phase 判定 ----
+        if remaining_time > 40:
+            phase = 1
+        elif remaining_time > 20:
+            phase = 2
+        else:
+            phase = 3
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return "QUIT"
+
+        heart.move(pygame.key.get_pressed())
+
+        # ---- 生成子彈 ----
+        if frame % 20 == 0:
+            if phase == 1:
+                bullets.append(CircleBullet())
+            elif phase == 2:
+                bullets.append(WaveBullet())
+            else:
+                bullets.append(HomingBullet(heart))
+
+        # ---- 更新子彈 ----
+        for b in bullets[:]:
+            b.update()
+
+            # ★ 追蹤子彈自爆（時間到）
+            if isinstance(b, HomingBullet) and b.life <= 0:
+                bullets.remove(b)
+                continue
+
+            if not BOX_RECT.colliderect(b.rect()):
+                bullets.remove(b)
+                continue
+
+            if b.rect().colliderect(
+                pygame.Rect(
+                    heart.x - heart.size,
+                    heart.y - heart.size,
+                    heart.size * 2,
+                    heart.size * 2
+                )
+            ):
+                heart.hp -= 10 if phase < 3 else 20
+                bullets.remove(b)
+                if heart.hp <= 0:
+                    pygame.quit()
+                    return "LOSE"
+
+        # ---- 繪圖 ----
+        pygame.draw.rect(screen, (255, 0, 0), BOX_RECT, 2)
+        heart.draw(screen)
+        for b in bullets:
+            b.draw(screen)
+
+        screen.blit(font.render(f"FINAL BOSS PHASE {phase}", True, (255, 100, 100)), (120, 10))
+        screen.blit(font.render(f"HP: {heart.hp}", True, (255, 255, 255)), (20, 330))
+        screen.blit(font.render(f"Time: {remaining_time}", True, (255, 255, 255)), (350, 330))
+
+        pygame.display.update()
+
+        if remaining_time <= 0:
+            pygame.quit()
+            return "WIN"
+
+
+# ================= 測試選單 =================
+def main():
+    print("=== Battle Test Menu ===")
+    print("1. Normal Boss Battle")
+    print("2. Final Boss Battle")
+    print("3. Exit")
+
+    choice = input("Choose: ")
+
+    if choice == "1":
+        print(boss_battle())
+    elif choice == "2":
+        print(final_boss_battle())
+    else:
+        sys.exit()
+
+
 if __name__ == "__main__":
-    print(boss_battle())
+    main()

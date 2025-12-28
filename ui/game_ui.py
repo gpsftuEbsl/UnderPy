@@ -138,8 +138,7 @@ class GameUI:
         :param self: GameUI 物件
         :param text: 狀態文字
         """
-        # 因為前面把提示文字改成 self.hint_label 了
-        # 這裡的 self.status_label 依然是指向左邊的 HP 血條，功能正常
+        # 這裡的 self.status_label 指向左邊的 HP 血條
         self.status_label.config(text=text)
 
     

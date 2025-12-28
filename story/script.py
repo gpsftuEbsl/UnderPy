@@ -15,6 +15,20 @@ SCENE_SCRIPT = {
         },
         "image": "assets/images/dungeon.png" #ok
     },
+
+    # --- 二周目輪迴開場 ---
+    "START_LOOP": {
+        "text": "......\n你又醒了過來。\n空氣中瀰漫著熟悉的味道，但你的直覺告訴你，你已經殺死過那個「東西」了。\n\n前方...還是那隻無知的史萊姆。\n這次，也許會有什麼不同？",
+        "choices": {
+            "調查": "SLIME_INFO",
+            "戰鬥(戰鬥系統)": "BATTLE_SLIME",
+            "逃跑": "END_RUN",
+            "讀取進度": "LOAD_GAME"
+        },
+        "image": "assets/images/dungeon.png"
+    },
+    # ---------------------------
+
     "SLIME_INFO": {
         "text": "史萊姆看起來黏糊糊的...\n(一股史萊姆的味道襲來)\n呃阿......(你邊摀住口鼻邊倒退)\n...這...確實是一隻史萊姆......\n說話間，史萊姆突然開始向你彈射從體內冒出的強酸子彈。",
         "choices": {
@@ -104,7 +118,6 @@ SCENE_SCRIPT = {
             "返回大廳": "LEVEL_3_START"
         },
         "image": "assets/images/black_door_closed.png" #ok
-        # "image": "assets/images/black_door_closed.png" # TODO: 製作門打開後的圖片
     },
 
     # --- 房間 2：線索畫作 ---
@@ -149,7 +162,7 @@ SCENE_SCRIPT = {
         "image": "assets/images/campfire.png" # 沿用 campfire
     },
 
-    # --- Boss 戰前奏 ---
+    # --- Boss 戰前奏 (一周目) ---
     "BOSS_PRELUDE": {
         "text": "你走進大門，一股強大的亂流撲面而來...\n(這裡就是終點了嗎？)",
         "choices": {
@@ -158,7 +171,17 @@ SCENE_SCRIPT = {
         "image": "assets/images/boss_room.png" #ok
     },
 
-    # --- 戰勝 Boss ---
+    # --- Boss 戰前奏 (二周目/真相篇) ---
+    "BOSS_PRELUDE_LOOP": {
+        "text": "你推開大門，但這次沒有亂流。\n虛空領主靜靜地坐在那裡，彷彿在等你。\n\n『...又是你。』\n『既然你帶著記憶歸來，代表系統的輪迴已經出現裂痕。』\n\n『告訴你一個真相吧... 外面的史萊姆、哥布林... 其實都是系統生成的「防毒軟體」。』\n『而我們... 只是被困在這個名為 [UnderPy] 的牢籠裡的數據罷了。』\n\n『來吧，擊敗我。或是被我刪除。這就是我們唯一的歸宿。』",
+        "choices": {
+            "準備戰鬥 (迎接終結)": "BOSS_BATTLE"
+        },
+        "image": "assets/images/boss_room.png"
+    },
+    # ----------------------------------------
+
+    # --- 戰勝 Boss (一周目) ---
     "BOSS_WIN": {
         "text": "未知的聲音:『............』\n『終......』\n『終於......解脫了嗎?......a8 ?』\n隨著【boss】的消失，周圍的牆壁開始崩塌\n【警告：核心程序受損...】\ng4ru,4的外殼碎裂，系統即將強制tj/6ru3.。\n一道耀眼的白光出現在前方。\n那是...出口？還是另一個輪迴的開始？",
         "choices": {
@@ -166,6 +189,24 @@ SCENE_SCRIPT = {
         },
         "image": "assets/images/boss_explode.png" #ok
     },
+
+    # --- 戰勝 Boss (二周目/真結局) ---
+    "BOSS_WIN_LOOP": {
+        "text": "領主倒下了，但他臉上帶著解脫的笑容。\n\n『做得好... 系統的邏輯崩潰了...』\n『你自由了...』\n\n四周的程式碼開始剝落，露出了背後的 [黑色終端機]。\n你意識到，你終於可以輸入那個指令了。",
+        "choices": {
+            "刪除遊戲世界 (結束輪迴)": "TRUE_END"
+        },
+        "image": "assets/images/boss_explode.png"
+    },
+
+    "TRUE_END": {
+        "text": "恭喜你，打破了輪迴。\n你已經超越了這個地下城的邏輯。\n\n「遊戲結束... 但你的故事才剛開始。」\n\n(真結局達成)",
+        "choices": {
+            "離開": "END_WIN" # 這裡一樣導向 END_WIN 讓系統重置，但意義已經不同了
+        },
+        "image": "assets/images/the_end.png"
+    },
+    # -----------------------------------
 
     # --- 結局 ---
     "END_RUN": {"text": "你逃跑了。Game Over。", "choices": {}, "image": "assets/images/the_end.png"},

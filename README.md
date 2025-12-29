@@ -1,95 +1,43 @@
-# UnderPy - Dungeon Adventure (v3.0)
+# 🏰 UnderPy - 雙引擎地下城冒險遊戲 (Dungeon RPG)
 
-這是一款基於 Python 製作的沉浸式文字冒險遊戲。採用 **MVC (Model-View-Controller)** 架構設計，結合了 Tkinter 的全螢幕介面與 Pygame 的戰鬥系統。
+> **結合 MUD 文字冒險的深度與 彈幕射擊(Bullet Hell) 的刺激，一款以 Python 打造的實驗性 RPG。**
 
-## 🛠 系統需求
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![Tkinter](https://img.shields.io/badge/GUI-Tkinter-green) ![Pygame](https://img.shields.io/badge/Engine-Pygame-red) ![Status](https://img.shields.io/badge/Status-Release-orange)
 
-* **Python 版本**: 3.10+
-* **必要套件**:
-* `Pillow` (PIL) - 負責圖片處理
-* `pygame` - 負責 Boss 戰鬥模組
+## 📖 專案簡介 (Introduction)
+**UnderPy** 是一個採用 **「雙引擎架構 (Dual-Engine Architecture)」** 開發的 RPG 遊戲。
+遊戲本體採用 **Tkinter** 構建經典的文字冒險介面，強調劇本敘事與解謎；而當遭遇強敵時，系統將無縫切換至 **Pygame** 引擎，進入即時動作戰鬥模式。
 
+玩家將扮演一名失去記憶的冒險者，在充滿史萊姆、哥布林與未知的地下城中探索，試圖打破輪迴，尋找「刪除世界」的真相。
 
+## ✨ 核心特色 (Key Features)
 
----
+### 🎮 遊戲體驗
+* **多重結局系統**：包含普通結局、死亡結局與二周目隱藏的「真結局 (True Ending)」。
+* **混合戰鬥模式**：
+    * 一般戰鬥：策略回合制 (文字描述)。
+    * BOSS 戰鬥：Undertale 風格的彈幕閃避 (Pygame)。
+* **沉浸式敘事**：實作打字機文字特效與動態震動回饋。
+* **完整存檔機制**：支援 JSON 進度保存，重啟遊戲後可延續冒險。
 
-## 🏛 專案架構與職責
+### 🛠️ 技術亮點 (Technical Highlights)
+本專案在技術實作上解決了多項 GUI 開發難題：
+1.  **異質視窗整合 (Integration)**：實現 Tkinter 主視窗與 Pygame 戰鬥視窗的無縫切換與控制權轉移。
+2.  **資料驅動架構 (Data-Driven)**：將劇本邏輯與程式碼分離，透過 `Dictionary` 結構管理龐大的對話與選項。
+3.  **非阻塞式延遲 (Non-blocking Delay)**：捨棄 `time.sleep`，全面採用 `root.after` 搭配 `Recursion` 實作動畫，確保介面永不卡死。
+4.  **穩健的架構設計**：採用 `GameManager` (邏輯) 與 `GameUI` (顯示) 分離的設計模式，並解決了 Python 常見的循環引用 (Circular Dependency) 問題。
 
-遊戲分為三大核心層次，確保程式碼具備良好的擴充性與可維護性：
-
-1. **Model (`Character`)**: 定義實體屬性（HP、ATK）與基礎動作（攻擊、存活判定）。
-2. **View (`GameUI`)**: 負責所有視覺呈現、全螢幕控制、打字機特效與物理回饋。
-3. **Controller (`GameManager`)**: 遊戲的大腦，負責場景跳轉、劇情判斷、受傷邏輯與密碼驗證。
-
----
-
-## 📖 模組與方法詳細說明
-
-### 1. GameUI (介面控制器)
-
-負責將遊戲狀態轉化為玩家可見的視覺特效。
-
-| 方法名稱 | 參數 | 具體描述 |
-| --- | --- | --- |
-| `type_text` | `text`, `speed`, `clear` | **打字機特效核心**。具備「任務鎖定」功能，呼叫時會自動取消上一個未完成的打字任務，防止文字交疊。`clear=True` 用於換場景，`False` 用於追加訊息。 |
-| `shake_window` | 無 | **物理回饋**。透過移動 `main_container` 的 `place` 座標，在全螢幕模式下模擬激烈的震動效果。 |
-| `flash_red` | 無 | **視覺回饋**。將所有容器背景瞬間轉為血紅色，並在 100 毫秒後恢復，增加受傷的真實感。 |
-| `update_image` | `image_path` | 自動縮放圖片至 500x350 並顯示於介面中心。 |
-| `set_choices` | `choices`, `handler` | 動態生成選項按鈕，並綁定指定的處理函式（劇情用或戰鬥用）。 |
-| `toggle_fullscreen` | `event` | 綁定 `F11`，在全螢幕與視窗模式間切換，並自動重置 UI 佈局。 |
-
----
-
-### 2. GameManager (遊戲管理器)
-
-負責核心邏輯運算與狀態轉換。
-
-#### 🛡 中央受傷處理系統：`player_take_damage`
-
-這是全遊戲唯一的扣血入口。當呼叫此方法時，系統會自動執行以下流程：
-
-1. 扣除 HP 並確保不為負值。
-2. 呼叫 `ui.update_status` 同步狀態。
-3. 觸發 `ui.shake_window` 與 `ui.flash_red`。
-4. 呼叫 `check_death` 進行生存判定。
-
-#### ⚔️ 戰鬥迴圈：`handle_goblin_combat`
-
-實現了「對話式回合制戰鬥」：
-
-* **攻擊邏輯**：玩家與敵人的傷害訊息會被收集到一個列表，最後透過單次 `type_text` 一併輸出，避免打字機衝突。
-* **防禦邏輯**：降低敵方攻擊力，提供策略性玩法。
-
-#### 🔐 密碼驗證：`handle_password_input`
-
-處理 `LEVEL_2_GATE` 的輸入邏輯。包含訊息合併技術，確保在密碼錯誤扣血時，提示訊息與受傷訊息能流暢地排隊打出。
-
----
-
-## 🎮 遊戲流程圖
-
-1. **START**: 進入地下城，初步探索。
-2. **LEVEL 1**: 遭遇史萊姆（伏筆）並進入下一層。
-3. **LEVEL 2 (Combat)**: 與哥布林進行對話式戰鬥。玩家可選擇放走（獲取密碼）或殺死。
-4. **LEVEL 2 (Puzzle)**: 密碼鎖大門。輸錯會受傷，HP 歸零則 Game Over。
-5. **LEVEL 3 (Boss Battle)**: 最終 Boss 戰（切換至 Pygame 模式）。
-
----
-
-## 📁 資料夾結構
+## 📂 專案結構 (Project Structure)
 
 ```text
 UnderPy/
-├── main.py              # 程式進入點，包含 GameManager
+├── main.py              # 遊戲入口與核心管理器 (GameManager)
 ├── story/
-│   └── script.py        # 遊戲劇本與分歧路徑
+│   └── script.py        # 劇本資料庫 (所有對話與場景設定)
 ├── ui/
-│   ├── __init__.py      # 套件宣告
-│   └── game_ui.py       # Tkinter 全螢幕美化介面
+│   └── game_ui.py       # Tkinter 介面封裝 (負責繪圖與特效)
 ├── battle/
-│   └── battle_game.py   # Pygame Boss 戰戰鬥模組
-└── assets/              # 存放遊戲圖片與素材
-
-```
-
----
+│   └── battle_game.py   # Pygame 戰鬥系統 (Boss 戰邏輯)
+├── assets/              # 遊戲素材 (圖片/音效)
+│   └── images/
+└── savefile.json        # 自動生成的存檔紀錄
